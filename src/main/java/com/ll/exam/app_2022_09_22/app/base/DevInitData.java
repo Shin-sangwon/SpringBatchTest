@@ -6,6 +6,7 @@ import com.ll.exam.app_2022_09_22.app.member.service.MemberService;
 import com.ll.exam.app_2022_09_22.app.product.entity.Product;
 import com.ll.exam.app_2022_09_22.app.product.entity.ProductOption;
 import com.ll.exam.app_2022_09_22.app.product.service.ProductService;
+import com.ll.exam.app_2022_09_22.order.entity.Order;
 import com.ll.exam.app_2022_09_22.order.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -36,6 +37,8 @@ public class DevInitData {
             // 5천원 사용
             memberService.addCash(member1, -5_000, "출금__일반");
 
+            memberService.addCash(member1, 300_000, "충전__무통장입금");
+
             // 현재 보유중인 캐시 금액
             long restCash = memberService.getRestCash(member1);
 
@@ -51,7 +54,10 @@ public class DevInitData {
             cartService.addItem(member1, productOption__RED_44, 2); // productOption__RED_44 총 수량 3
             cartService.addItem(member1, productOption__BLUE_44, 1); // productOption__BLUE_44 총 수량 1
 
-            orderService.createFromCart(member1);
+            Order order1 = orderService.createFromCart(member1);
+
+            int order1PayPrice = order1.calculatePayPrice();
+            orderService.payByRestCashOnly(order1);
         };
     }
 }
